@@ -1,0 +1,32 @@
+{
+  "name": "node-file-upload",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon -e ts --exec \"npm run compile\"",
+    "compile": "ts-node src/server.ts",
+    "debug": "ts-node --nolazy --debug-brk=5858 src/server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "azure-storage": "^2.1.0",
+    "body-parser": "^1.17.2",
+    "busboy": "^0.2.14",
+    "compression": "^1.6.2",
+    "cors": "^2.8.3",
+    "express": "^4.15.3",
+    "guid": "0.0.12",
+    "mongoose": "^4.10.2",
+    "nodemon": "^1.11.0",
+    "path": "^0.12.7",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  },
+  "devDependencies": {
+    "ts-node": "^3.0.4",
+    "typescript": "^2.3.3"
+  }
+}
