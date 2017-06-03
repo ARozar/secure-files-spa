@@ -1,6 +1,5 @@
 import { Router, RequestHandler, Response, Request } from 'express';
 import { ParsedAsJson } from 'body-parser'
-import * as Busboy from 'busboy';
 import * as path from 'path';
 import * as blobStorage from '../services/blobStorage';
 import { ProfileRecord } from '../models/profile';
@@ -36,29 +35,17 @@ router.get('/file/:container/:image', (req: Request, res: Response) => {
     .catch((data) => res.status(500).send(data))
 
 });
-router.post('/upload', (req, res) => {
-  const busboy = new Busboy({ headers: req.headers });
 
-  let newPerson = new ProfileRecord();
+router.post('/upload',blobStorage.uploadHandler.single('document'), (req, res) => {
+//     console.log('uploading start')
+    let fileName = req.file.blobName;
 
-  busboy.on('field', function (fieldname, val, fieldnameTruncated, valTruncated) {
-    newPerson[fieldname] = val;
-  });
+    let newPerson = new ProfileRecord();
+    newPerson = Object.assign(newPerson, { fileName,...req.body });
 
-  busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
-    console.log('uploading start')
-    let fileName = `${guid.create()}-${filename}`;
-
-    newPerson = Object.assign(newPerson, { fileName });
-
-    blobStorage
-      .saveToBlob(fileName, file)
-      .then((data) => newPerson.save())
+     newPerson.save()
       .then((data) => res.json({ info: 'person created successfully' + data }))
-      .catch((err) => res.json({ info: 'error during Person create', error: err }));
-  });
-
-  req.pipe(busboy);
+//      .catch((err) => res.json({ info: 'error during Person create', error: err }));
 });
 
 router.delete('/applications/:id', (req: Request, res: Response) => {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, RequestOptions, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-upload',
@@ -13,7 +14,7 @@ export class UploadComponent implements OnInit {
   public name: string;
   public description: string;
   
-  constructor(private http: Http) {
+  constructor(private http: Http, private router: Router) {
   }
 
   fileChange(event) {
@@ -28,7 +29,7 @@ export class UploadComponent implements OnInit {
 
   submit(){
     const formData: FormData = new FormData();
-      formData.append('uploadFile', this.file, this.file.name);
+      formData.append('document', this.file, this.file.name);
 
       formData.append('name', this.name);
 
@@ -43,7 +44,7 @@ export class UploadComponent implements OnInit {
         .map(res => res.json())
         .catch(error => Observable.throw(error))
         .subscribe(
-        data => console.log(data),
+        data => this.router.navigate(['applications']),
         error => console.log(error)
         )
 

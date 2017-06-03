@@ -1,10 +1,21 @@
 import * as azure from 'azure-storage';
+import * as  multer from 'multer';
+import * as MulterAzureStorage from 'multer-azure-storage';
 
-process.env['AZURE_STORAGE_ACCOUNT'] = 'cognativeimages';
-process.env['AZURE_STORAGE_ACCESS_KEY'] = 'vWzKIHpIZkGHeYjoA93jv8FY+UjCI5FhtKLA9qpISEbzE2c7Ll7xSgbhpsS75PSPC74SXtSZnRcQsOmFO/cARw==';
+import '../config';
 
-var blobService = azure.createBlobService();
-var images = "images";
+const blobService = azure.createBlobService();
+const images = "images";
+
+const uploadHandler = multer({
+  storage: new MulterAzureStorage({
+    azureStorageConnectionString: process.env.AZURE_STORAGE_ENDPOINT,
+    azureStorageAccessKey: process.env.AZURE_STORAGE_ACCESS_KEY,
+    azureStorageAccount: process.env.AZURE_STORAGE_ACCOUNT,
+    containerName: images,
+    containerSecurity: 'blob'
+  })
+});
 
 function saveToBlob(name, stream) {
 
@@ -15,15 +26,15 @@ function saveToBlob(name, stream) {
 
 function getUrl(name) {
 
-    var startDate = new Date();
+    const startDate = new Date();
     startDate.setMinutes(startDate.getMinutes() - 15);
 
-    var expiryDate = new Date(startDate);
+    const expiryDate = new Date(startDate);
     expiryDate.setFullYear(startDate.getFullYear() + 30);
 
-    var permissions = azure.BlobUtilities.SharedAccessPermissions.READ;
+    const permissions = azure.BlobUtilities.SharedAccessPermissions.READ;
 
-    var sharedAccessPolicy = {
+    const sharedAccessPolicy = {
         AccessPolicy: {
             Permissions: permissions,
             Start: startDate,
@@ -31,7 +42,7 @@ function getUrl(name) {
         }
     };
 
-    var sasToken = blobService.generateSharedAccessSignature(images, name, sharedAccessPolicy);
+    const sasToken = blobService.generateSharedAccessSignature(images, name, sharedAccessPolicy);
 
     return blobService.getUrl(images, name, sasToken);
 }
@@ -39,5 +50,6 @@ function getUrl(name) {
 
 export {
     saveToBlob,
-    getUrl
+    getUrl,
+    uploadHandler
 }
