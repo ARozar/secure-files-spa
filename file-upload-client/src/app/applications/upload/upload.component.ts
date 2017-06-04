@@ -3,6 +3,9 @@ import { Http, RequestOptions, Headers, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { Router } from "@angular/router";
 
+import { ApplicationApiService } from '../services/application-api.service';
+
+
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
@@ -14,7 +17,7 @@ export class UploadComponent implements OnInit {
   public name: string;
   public description: string;
   
-  constructor(private http: Http, private router: Router) {
+  constructor(private applicationApi: ApplicationApiService, private router: Router) {
   }
 
   fileChange(event) {
@@ -35,14 +38,7 @@ export class UploadComponent implements OnInit {
 
       formData.append('description', this.description);
 
-      const headers = new Headers()
-
-      const options = new RequestOptions({ headers: headers });
-      const apiUrl = "http://localhost:3002/Upload";
-
-      this.http.post(apiUrl, formData, options)
-        .map(res => res.json())
-        .catch(error => Observable.throw(error))
+      this.applicationApi.submitApplications(formData)
         .subscribe(
         data => this.router.navigate(['applications']),
         error => console.log(error)

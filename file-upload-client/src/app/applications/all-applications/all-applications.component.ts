@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Http } from "@angular/http";
 import { Observable } from "rxjs/Observable";
 
+import { ApplicationApiService } from '../services/application-api.service';
 
 @Component({
   selector: 'app-all-applications',
@@ -12,11 +13,10 @@ export class AllApplicationsComponent implements OnInit {
 
   public applications: any[];
 
-  constructor(private http: Http) { }
+  constructor(private applicationApi: ApplicationApiService) { }
 
   ngOnInit() {
-    this.http.get('http://localhost:3002/applications')
-      .map(res => res.json())
+    this.applicationApi.getAllApplications()
       .subscribe(
       (data) => this.applications = data
       );
@@ -24,7 +24,7 @@ export class AllApplicationsComponent implements OnInit {
 
   deleteApplication(id: number) {
 
-    this.http.delete(`http://localhost:3002/applications/${id}`, )
+    this.applicationApi.deleteApplication(id)
       .subscribe(
       () => this.applications = this.applications.filter((application) => application._id !== id)
       );
@@ -32,7 +32,7 @@ export class AllApplicationsComponent implements OnInit {
 
   getFileUrl(fileName: string) {
 
-    this.http.get(`http://localhost:3002/file/images/${fileName}`)
+    this.applicationApi.getFileUrl(fileName)
       .map(res => res.json())
       .subscribe(
        ({uri}) => window.open(uri, '_blank')
