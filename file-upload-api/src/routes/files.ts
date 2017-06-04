@@ -1,5 +1,4 @@
 import { Router, RequestHandler, Response, Request } from 'express';
-import { ParsedAsJson } from 'body-parser'
 import * as path from 'path';
 import * as blobStorage from '../services/blobStorage';
 import { ProfileRecord } from '../models/profile';
@@ -36,7 +35,7 @@ router.get('/file/:container/:image', (req: Request, res: Response) => {
 
 });
 
-router.post('/upload',blobStorage.uploadHandler.single('document'), (req, res) => {
+router.post('/upload',blobStorage.uploadHandler.single('document'), (req:Request & any, res) => {
 //     console.log('uploading start')
     let fileName = req.file.blobName;
 
