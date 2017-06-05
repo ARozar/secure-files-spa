@@ -33,7 +33,6 @@ export class AllApplicationsComponent implements OnInit {
   getFileUrl(fileName: string) {
 
     this.applicationApi.getFileUrl(fileName)
-      .map(res => res.json())
       .subscribe(
        ({uri}) => window.open(uri, '_blank')
       );
